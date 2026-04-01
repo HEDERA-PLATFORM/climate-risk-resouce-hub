@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library — Climate Risk Resource Hub</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="stylesheet" href="assets/theme.css" />
+  <style>
+    .type-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .type-tab {
+      font-size: 0.77rem;
+      font-weight: 400;
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--c-border);
+      background: var(--c-surface);
+      color: var(--c-ink-mid);
+      cursor: pointer;
+      transition: all .12s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .type-tab:hover { border-color: var(--c-teal); }
+    .type-tab.active { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-accent); font-weight: 500; }
+    .type-tab .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .res-card-head {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: start;
+      gap: 14px;
+      padding: 16px 0;
+      cursor: pointer;
+    }
+    .type-icon {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .icon-article   { background: #E6F1F0; }
+    .icon-report    { background: #E8F4E8; }
+    .icon-guideline { background: #F0EBE0; }
+    .icon-tool      { background: #EAE6F5; }
+    .icon-video     { background: #F5E6E6; }
+    .icon-podcast   { background: #F5F0E0; }
+    .icon-default   { background: var(--c-teal-light); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside id="site-sidebar"></aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="breadcrumb">Climate Risk Resource Hub &rsaquo; <strong>Resource hub</strong></div>
+    </div>
+
+    <div class="page-wrap">
+      <header class="page-header">
+        <span class="eyebrow">Knowledge hub</span>
+        <h1>Library of climate risk resources</h1>
+        <p>Articles, reports, guidelines, tools, videos, and podcasts on climate risk assessment, financial disclosure, scenario analysis, and adaptation finance.</p>
+      </header>
+
+      <div class="type-tabs" id="type-tabs"></div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M10 6.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0zm-.69 3.897 2.646 2.646-.707.707L8.603 10.21A4.5 4.5 0 1 1 9.31 10.4z" fill="currentColor"/>
+          </svg>
+          <input type="text" id="search" placeholder="Search title, author, topic…" autocomplete="off" />
+        </div>
+        <select class="filter-select" id="filter-license">
+          <option value="">All access</option>
+          <option value="Open Access">Open access</option>
+          <option value="Restricted">Restricted</option>
+        </select>
+        <select class="filter-select" id="filter-language">
+          <option value="">All languages</option>
+          <option value="EN">English</option>
+          <option value="FR">French</option>
+          <option value="DE">German</option>
+          <option value="ES">Spanish</option>
+          <option value="IT">Italian</option>
+          <option value="PT">Portuguese</option>
+          <option value="ZH">Chinese</option>
+          <option value="AR">Arabic</option>
+          <option value="Multi">Multilingual</option>
+        </select>
+        <select class="filter-select" id="filter-region">
+          <option value="">All regions</option>
+        </select>
+      </div>
+
+      <div class="tag-bar" id="tag-bar"></div>
+      <div class="result-count" id="result-count"></div>
+      <div class="card-list" id="card-list"></div>
+      <div class="empty-state" id="empty-state">
+        <strong>No resources found</strong>
+        Try a different search term or clear the filters.
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      Climate Risk Resource Hub - Funded by 
+      <a href="https://dbu.de" target="_blank" rel="noopener">DBU</a> (Deutsche Bundesstiftung Umwelt) - Project ID 40037/01
+    </footer>
+  </div>
+</div>
+
+<script src="assets/nav.js"></script>
+<script src="data/resources.js"></script>
+<script>
+const TYPES = {
+  article:   { label:"Article",   dot:"#0F5C55", icon:`<svg width="14" height="14" fill="none" viewBox="0 0 16 16"><rect x="2" y="1.5" width="12" height="13" rx="1.5" stroke="#0F5C55" stroke-width="1.3"/><path d="M5 5.5h6M5 8h6M5 10.5h3.5" stroke="#0F5C55" stroke-width="1.2" stroke-linecap="round"/></svg>` },
+  report:    { label:"Report",    dot:"#1A5C28", icon:`<svg width="14" height="14" fill="none" viewBox="0 0 16 16"><rect x="2" y="1.5" width="12" height="13" rx="1.5" stroke="#1A5C28" stroke-width="1.3"/><path d="M5 10l2-3 2 2 2-4" stroke="#1A5C28" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
+  guideline: { label:"Guideline", dot:"#6B4A12", icon:`<svg width="14" height="14" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" stroke="#6B4A12" stroke-width="1.3"/><path d="M8 5v4M8 11v.5" stroke="#6B4A12" stroke-width="1.3" stroke-linecap="round"/></svg>` },
+  tool:      { label:"Tool",      dot:"#3A2080", icon:`<svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M10 2a4 4 0 0 1 0 7.7L5 15l-2-2 5.3-5A4 4 0 0 1 10 2z" stroke="#3A2080" stroke-width="1.3" stroke-linejoin="round"/></svg>` },
+  video:     { label:"Video",     dot:"#7A1A1A", icon:`<svg width="14" height="14" fill="none" viewBox="0 0 16 16"><rect x="1" y="3" width="10" height="10" rx="2" stroke="#7A1A1A" stroke-width="1.3"/><path d="M11 6l4-2v8l-4-2V6z" stroke="#7A1A1A" stroke-width="1.3" stroke-linejoin="round"/></svg>` },
+  podcast:   { label:"Podcast",   dot:"#7A4500", icon:`<svg width="14" height="14" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="6" r="3" stroke="#7A4500" stroke-width="1.3"/><path d="M4 9a4 4 0 0 0 8 0" stroke="#7A4500" stroke-width="1.3" stroke-linecap="round"/><path d="M8 13v2" stroke="#7A4500" stroke-width="1.3" stroke-linecap="round"/></svg>` },
+};
+
+const TAG_CLASS = {
+  "climate risk":"risk","financial":"finance","finance":"finance","carbon":"finance",
+  "water":"water","flood":"water","physical risk":"risk","scenario":"default",
+  "adaptation":"agri","policy":"policy","regulation":"policy","standards":"policy",
+  "emissions":"default","data":"default",
+};
+function pillClass(tag) {
+  const k = Object.keys(TAG_CLASS).find(k => tag.toLowerCase().includes(k));
+  return "pill pill-" + (k ? TAG_CLASS[k] : "default");
+}
+
+let activeType = null;
+let activeTag  = null;
+const allTags    = [...new Set(RESOURCES.flatMap(r => r.tags))].sort();
+const allRegions = [...new Set(RESOURCES.flatMap(r => r.region||[]))].filter(Boolean).sort();
+const presentTypes = [...new Set(RESOURCES.map(r => r.type))];
+
+/* Populate region dropdown from data */
+const regionSel = document.getElementById("filter-region");
+allRegions.forEach(reg => {
+  const opt = document.createElement("option");
+  opt.value = reg; opt.textContent = reg;
+  regionSel.appendChild(opt);
+});
+
+const LANG_LABELS = { EN:"English", FR:"French", DE:"German", ES:"Spanish", IT:"Italian", PT:"Portuguese", ZH:"Chinese", AR:"Arabic", Multi:"Multilingual" };
+
+function renderTypeTabs() {
+  const bar = document.getElementById("type-tabs");
+  bar.innerHTML = "";
+  const all = document.createElement("button");
+  all.className = "type-tab" + (!activeType ? " active" : "");
+  all.innerHTML = `All <span style="font-size:.7rem;opacity:.55">(${RESOURCES.length})</span>`;
+  all.onclick = () => { activeType = null; renderAll(); };
+  bar.appendChild(all);
+  presentTypes.forEach(type => {
+    const cfg = TYPES[type] || { label: type, dot: "#888" };
+    const count = RESOURCES.filter(r => r.type === type).length;
+    const btn = document.createElement("button");
+    btn.className = "type-tab" + (activeType === type ? " active" : "");
+    btn.innerHTML = `<span class="dot" style="background:${cfg.dot}"></span>${cfg.label} <span style="font-size:.7rem;opacity:.55">(${count})</span>`;
+    btn.onclick = () => { activeType = type; renderAll(); };
+    bar.appendChild(btn);
+  });
+}
+
+function renderTagBar() {
+  const bar = document.getElementById("tag-bar");
+  bar.innerHTML = "";
+  const all = document.createElement("button");
+  all.className = "chip" + (!activeTag ? " active" : "");
+  all.textContent = "All topics";
+  all.onclick = () => { activeTag = null; renderAll(); };
+  bar.appendChild(all);
+  allTags.forEach(tag => {
+    const btn = document.createElement("button");
+    btn.className = "chip" + (activeTag === tag ? " active" : "");
+    btn.textContent = tag;
+    btn.onclick = () => { activeTag = tag; renderAll(); };
+    bar.appendChild(btn);
+  });
+}
+
+function filtered() {
+  const q      = document.getElementById("search").value.toLowerCase().trim();
+  const lic    = document.getElementById("filter-license").value;
+  const lang   = document.getElementById("filter-language").value;
+  const region = document.getElementById("filter-region").value;
+  return RESOURCES.filter(r => {
+    if (activeType && r.type !== activeType) return false;
+    if (activeTag  && !r.tags.includes(activeTag)) return false;
+    if (lic    && r.license !== lic) return false;
+    if (lang   && r.language !== lang) return false;
+    if (region && !(r.region||[]).includes(region)) return false;
+    if (q) {
+      const hay = [r.title, r.author||"", r.year||"", r.language||"", ...(r.region||[]), r.description||"", ...r.tags].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function buildCard(r) {
+  const card = document.createElement("div");
+  card.className = "card";
+  const cfg = TYPES[r.type] || { label: r.type, dot: "#888", icon: "" };
+  const licBadge = r.license === "Open Access"
+    ? `<span class="type-badge access-open">Open access</span>`
+    : r.license === "Restricted"
+    ? `<span class="type-badge type-video">Restricted</span>`
+    : "";
+  const metaParts = [r.author, r.year].filter(Boolean);
+  const metaSub = metaParts.join(" · ");
+  const linkBtn = r.url
+    ? `<a class="btn btn-primary" href="${r.url}" target="_blank" rel="noopener">Open resource <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M1 10 10 1M10 1H4M10 1v6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`
+    : `<span style="font-size:.78rem;color:var(--c-ink-faint);font-weight:300">No URL available</span>`;
+
+  /* build detail metadata cells */
+  const detailCells = [
+    r.year     ? `<div class="detail-cell"><label>Year</label><span>${r.year}</span></div>` : "",
+    r.language ? `<div class="detail-cell"><label>Language</label><span>${LANG_LABELS[r.language] || r.language}</span></div>` : "",
+    (r.region||[]).length ? `<div class="detail-cell"><label>Region</label><span>${r.region.join(", ")}</span></div>` : "",
+    r.license  ? `<div class="detail-cell"><label>Access</label><span>${r.license}</span></div>` : "",
+  ].filter(Boolean).join("");
+
+  card.innerHTML = `
+    <div class="res-card-head" role="button" aria-expanded="false" tabindex="0">
+      <div class="type-icon icon-${r.type || 'default'}">${cfg.icon || ""}</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px">
+          <span class="card-title">${r.title}</span>
+          <span class="type-badge type-${r.type||'default'}">${cfg.label}</span>
+          ${licBadge}
+        </div>
+        ${metaSub ? `<div class="card-sub">${metaSub}</div>` : ""}
+        <div class="card-pills">${r.tags.map(t=>`<span class="${pillClass(t)}">${t}</span>`).join("")}</div>
+      </div>
+      <div class="card-aside">
+        <svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="card-detail">
+      ${r.description ? `<p class="detail-desc">${r.description}</p>` : ""}
+      ${detailCells ? `<div class="detail-grid">${detailCells}</div>` : ""}
+      <span class="tags-label">Topics</span>
+      <div class="tags-list">${r.tags.map(t=>`<span class="tag-chip">${t}</span>`).join("")}</div>
+      <div class="card-actions">${linkBtn}</div>
+    </div>`;
+
+  const head = card.querySelector(".res-card-head");
+  const toggle = () => { const o = card.classList.toggle("open"); head.setAttribute("aria-expanded", o); };
+  head.addEventListener("click", toggle);
+  head.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); toggle(); }});
+  return card;
+}
+
+function renderAll() {
+  renderTypeTabs();
+  renderTagBar();
+  const results = filtered();
+  const list  = document.getElementById("card-list");
+  const empty = document.getElementById("empty-state");
+  list.innerHTML = "";
+  document.getElementById("result-count").textContent = results.length ? `${results.length} resource${results.length!==1?"s":""}` : "";
+  empty.style.display = results.length ? "none" : "block";
+  results.forEach(r => list.appendChild(buildCard(r)));
+}
+
+document.getElementById("search").addEventListener("input", renderAll);
+document.getElementById("filter-license").addEventListener("change", renderAll);
+document.getElementById("filter-language").addEventListener("change", renderAll);
+document.getElementById("filter-region").addEventListener("change", renderAll);
+renderAll();
+</script>
+</body>
+</html>

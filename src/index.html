@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate Risk Resource Hub</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="stylesheet" href="assets/theme.css" />
+  <style>
+    .hero { padding: 16px 0 36px; }
+    .hero .eyebrow { margin-bottom: 12px; }
+    .hero h1 {
+      font-weight: 300;
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--c-ink);
+      margin-bottom: 20px;
+    }
+    .hero h1 strong { font-weight: 600; }
+    .hero h1 span { color: var(--c-teal); }
+    .hero-lead {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--c-ink-mid);
+      max-width: 780px;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+    .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-hero {
+      height: 40px;
+      padding: 0 22px;
+      font-size: 0.855rem;
+      font-weight: 500;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--c-ink);
+      background: var(--c-surface);
+      color: var(--c-ink);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+    }
+    .btn-hero:hover { border-color: var(--c-teal); color: var(--c-ink); background: var(--c-teal-light); }
+    .btn-hero.primary { background: var(--c-accent); border-color: var(--c-accent); }
+    .btn-hero.primary:hover { background: var(--c-accent-dark); border-color: var(--c-accent-dark); color: var(--c-ink); }
+
+    /* About section */
+    .about-section { margin-bottom: 40px; }
+    .about-section h2 { font-size: 1.25rem; font-weight: 300; letter-spacing: -0.01em; color: var(--c-ink); margin-bottom: 16px; }
+    .about-section h2 strong { font-weight: 600; }
+    .about-section p { font-size: 0.9rem; color: var(--c-ink-mid); font-weight: 300; line-height: 1.8; max-width: 620px; }
+    .placeholder-block {
+      border: 1px dashed var(--c-teal);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      font-size: 0.845rem;
+      background: var(--c-teal-light);
+      margin-top: 12px;
+    }
+    .placeholder-block strong {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--c-ink-mid);
+      margin-bottom: 5px;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+    .placeholder-block ul{
+      list-style: circle;
+    }
+
+    /* Nav cards */
+    .nav-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1px; margin-top: 0; }
+    .nav-cards-wrap {
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .nav-card {
+      background: var(--c-surface);
+      padding: 22px 24px;
+      text-decoration: none;
+      display: block;
+      border-right: 1px solid var(--c-border);
+      transition: background .12s;
+    }
+    .nav-card:last-child { border-right: none; }
+    .nav-card:hover { background: var(--c-teal-light); }
+    .nav-card-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-card-icon.teal   { background: var(--c-teal-light); }
+    .nav-card-icon.green  { background: #E8F4E8; }
+    .nav-card-icon.purple { background: #EAE6F5; }
+    .nav-card h3 { font-size: 0.875rem; font-weight: 500; color: var(--c-ink); margin-bottom: 6px; }
+    .nav-card p  { font-size: 0.8rem; color: var(--c-ink-mid); line-height: 1.65; font-weight: 300; margin: 0; }
+    .nav-card .card-link { display: inline-block; margin-top: 14px; font-size: 0.77rem; font-weight: 500; color: var(--c-teal); }
+
+    /* Partners */
+    .partners-label { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-ink-faint); margin-bottom: 16px; display: block; }
+    .logo-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+    .logo-placeholder { height: 28px; min-width: 70px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside id="site-sidebar"></aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="breadcrumb">Climate Risk Resource Hub &rsaquo; <strong>Home</strong></div>
+    </div>
+
+    <div class="page-wrap">
+   
+
+      <!-- Hero -->
+      <div class="hero">
+        <span class="eyebrow">Research project</span>
+        <h1>Tools to support<br><span>Microfinance Institutions</span> to assess
+and manage <strong>Climate- and Biodiversity-related</strong> Risks and Opportunities</h1>
+        <p class="hero-lead">
+          An initiative gathering relevant resources, available open data, 
+          practical tools, and best practices to support microfinance institutions in understanding and managing
+          risks related to climate and biodiversity. 
+          Implemented by <a href="https://hedera.online" target="_blank">HEDERA Sustainable Solutions</a> with the 
+          financial support of the <a href="https://dbu.de" target="_blank">Deutsche Bundesstiftung Umwelt (DBU)</a>.
+        </p>
+        <div class="hero-cta">
+          <a class="btn-hero primary" href="climate-datasets.html">Explore datasets</a>
+          <a class="btn-hero" href="#">Browse resources (coming soon)</a>
+          <a class="btn-hero" href="#">Risk assessment tool (coming soon)</a>
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+
+      <!-- About -->
+      <div class="about-section">
+        <h2><strong>About</strong> the project</h2>
+        <div class="placeholder-block">
+          Climate change and biodiversity loss affect vulnerable populations, threatening livelihoods, access to basic services, and economic stability. These impacts are particularly severe in rural and remote areas, where communities often depend directly on natural resources and have limited capacity to adapt. In these contexts, microfinance institutions (MFIs) play a central role by providing loans and financial services to people and small businesses without access to traditional banks. Green inclusive finance builds on this role by promoting financial products that support climate change adaptation and mitigation, strengthen the resilience of vulnerable populations, as well as non-financial practices such as awareness-raising activities for clients and communities. Despite their importance, many MFIs are not yet adequately prepared to assess climate- and biodiversity-related risks. Existing tools are fragmented and mostly designed for large commercial financial institutions, hence not suitable to be applied to the realities of the microfinance sector. As a result, risks are often underestimated, mitigation strategies remain weak, and opportunities to develop resilient and sustainable financial products are missed.
+          <br>
+          <br>
+          This situation exposes MFIs to climate-related loan defaults, higher operational costs, and threats to their own financial stability. It also limits the effective use of support from investors and development programs, for which the assessment, monitoring, and reporting of climate- and biodiversity-related risks have become a key component.
+          <br>
+          <br>
+          The project aims to develop a practical framework and digital tools for the assessment of climate- and biodiversity-related risks tailored to the microfinance sector. It addresses both internal risks (institutional practices and operations) and external risks (activities financed through loan portfolios and their impacts on communities). Key goals include strengthening MFIs’ capacity to manage climate risks and improving transparency for impact investors.
+          <br>
+          <br>
+The implementation will consider different directions. An initial research will provide a review of existing climate risk methodologies, available datasets, and existing practices in the context of microfinance. The results will be used to develop and validate assessment questionnaires and digital tools, implementing these tools with selected MFIs. The material will also serve for the provision of dedicated workshops with partner institutions.
+        </div>
+        <div class="placeholder-block" style="margin-top:10px">
+          <strong>Objective and expected results</strong>
+          <ul>
+            <li>Provide findable and practical resources related to climate- and biodiversity-risk assessment for microfinance practitioners</li>
+            <li>Develop <strong>open-source</strong> digital tools for managing climate-related risks, aligned with existing standards and adapted to the sector's needs</li>
+            <li>Pilot testing of the tools with selected microfinance institutions</li>
+            <li>Training material and initial training events for practitioners</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+
+      <!-- Section navigator -->
+      <div class="about-section">
+        <h2>Explore <strong>the hub</strong></h2>
+        <div class="nav-cards-wrap" style="margin-top:20px">
+          <div class="nav-cards">
+
+            <a class="nav-card" href="climate-datasets.html">
+              <div class="nav-card-icon teal">
+                <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1" stroke="#80BBB1" stroke-width="1.3"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1" stroke="#80BBB1" stroke-width="1.3"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1" stroke="#80BBB1" stroke-width="1.3"/><rect x="9" y="9" width="5.5" height="5.5" rx="1" stroke="#80BBB1" stroke-width="1.3" stroke-dasharray="2 1.5"/></svg>
+              </div>
+              <h3>Climate datasets</h3>
+              <p>Catalogue of publicly available datasets related to 
+                climate and climate-related events 
+                (temperature, drought, water stress, wildfire and more). Each dataset contains
+                a description of relevant variables and format, availabily, and key facts about its usage in the
+                context of climate-risk assessment.</p>
+              <span class="card-link">Browse datasets →</span>
+            </a>
+
+            <a class="nav-card" href="resource-hub.html">
+              <div class="nav-card-icon green">
+                <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="2" y="1.5" width="12" height="13" rx="1.5" stroke="#1A5C28" stroke-width="1.3"/><path d="M5 5.5h6M5 8h6M5 10.5h3.5" stroke="#1A5C28" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+              <h3>Knowledge hub</h3>
+              <p>Collection of recent reports, guidelines, tools, articles, and multimedia material
+                on climate risk assessment, with particular focus on the microfinance and impact-investment sectors. (coming soon)</p>
+              <!--<span class="card-link">Browse resources →</span>-->
+            </a>
+
+            <a class="nav-card" href="risk-assessment.html">
+              <div class="nav-card-icon purple">
+                <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 1.5L1.5 5.5v5L8 14.5l6.5-4v-5L8 1.5z" stroke="#3A2080" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 9V6.5" stroke="#3A2080" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="10.5" r=".6" fill="#3A2080"/></svg>
+              </div>
+              <h3>Risk assessment guide</h3>
+              <p>Step-by-step framework developed within the project to support
+                practictioners (institution management, dedicated teams, or consultants)
+                through a climate risk assessment. (coming soon)</p>
+              <!--<span class="card-link">View guide →</span>-->
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+
+      <!-- Team -->
+      <div class="about-section">
+        <h2>Project <strong>Partners</strong></h2>
+        Project implementation in collaboration with the 
+        <a href="https://www.european-microfinance.org/" target="_blank">European Microfinance Network</a> (EMN) and 
+        <a href="https://www.inpulse.coop/" target="_blank">Inpulse</a>.
+        <div class="placeholder-block">
+          <a href="https://hedera.online/en/home/contact.html" target="_blank">Contact us</a> if you are interested in collaborating in the framework of this initiative
+        </div>
+        <div style="margin-top:28px">
+          <span class="partners-label">Funded by the Deutsche Bundesstiftung Umwelt (DBU)</span>
+          <div class="logo-row">
+            <div class="logo-placeholder" style="width:140px">
+              <img src="assets/img/dbu_logo_en.png" alt="DBU" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="page-footer">
+      Climate Risk Resource Hub - Funded by 
+      <a href="https://dbu.de" target="_blank" rel="noopener">DBU</a> (Deutsche Bundesstiftung Umwelt) - Project ID 40037/01
+    </footer>
+  </div>
+</div>
+<script src="assets/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate Datasets Navigator — Climate Risk Resource Hub</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="stylesheet" href="assets/theme.css" />
+</head>
+<body>
+<div class="app-shell">
+  <aside id="site-sidebar"></aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="breadcrumb">Climate Risk Resource Hub &rsaquo; <strong>Climate datasets navigator</strong></div>
+    </div>
+
+    <div class="page-wrap">
+      <header class="page-header">
+        <span class="eyebrow">Climate datasets navigator</span>
+        <h1>Public climate data sources</h1>
+        <p>Curated catalogue of publicly available datasets covering temperature, drought, water stress, wildfire risk, and other climate hazards — with variables, formats, coverage, and access details.</p>
+      </header>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M10 6.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0zm-.69 3.897 2.646 2.646-.707.707L8.603 10.21A4.5 4.5 0 1 1 9.31 10.4z" fill="currentColor"/>
+          </svg>
+          <input type="text" id="search" placeholder="Search datasets, providers, variables…" autocomplete="off" />
+        </div>
+        <select class="filter-select" id="filter-access">
+          <option value="">All access types</option>
+          <option value="Open Access">Open access</option>
+          <option value="Request required">Request required</option>
+        </select>
+        <select class="filter-select" id="filter-format">
+          <option value="">All formats</option>
+          <option value="Raster">Raster</option>
+          <option value="GIS">GIS</option>
+          <option value="CSV">CSV</option>
+          <option value="NetCDF">NetCDF</option>
+        </select>
+      </div>
+
+      <div class="tag-bar" id="tag-bar"></div>
+      <div class="result-count" id="result-count"></div>
+      <div class="card-list" id="card-list"></div>
+      <div class="empty-state" id="empty-state">
+        <strong>No datasets found</strong>
+        Try a different search term or clear the filters.
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      Climate Risk Resource Hub - Funded by 
+      <a href="https://dbu.de" target="_blank" rel="noopener">DBU</a> (Deutsche Bundesstiftung Umwelt) - Project ID 40037/01
+    </footer>
+
+  </div>
+</div>
+
+<script src="assets/nav.js"></script>
+<script src="data/datasets.js"></script>
+<script>
+const TAG_CLASS = {
+  "water stress":"water","water risk":"water",
+  "drought":"drought","precipitation deficit":"drought",
+  "temperature":"temp","heat stress":"temp","thermal comfort":"temp",
+  "soil":"soil","erosion":"soil","land degradation":"soil",
+  "agriculture":"agri","crop suitability":"agri","land use":"agri",
+  "wildfire":"fire","fire risk":"fire","fire weather":"fire",
+  "precipitation":"precip","flood":"precip","extreme events":"precip",
+  "cyclone":"risk","tropical storm":"risk","coastal hazard":"risk",
+};
+function pillClass(tag) {
+  const k = Object.keys(TAG_CLASS).find(k => tag.toLowerCase().includes(k));
+  return "pill pill-" + (k ? TAG_CLASS[k] : "default");
+}
+function accessBadge(a) {
+  if (!a) return "";
+  if (a.toLowerCase().includes("open"))    return `<span class="type-badge access-open">${a}</span>`;
+  if (a.toLowerCase().includes("request")) return `<span class="type-badge access-request">${a}</span>`;
+  return `<span class="type-badge type-default">${a}</span>`;
+}
+
+const allTags = [...new Set(DATASETS.flatMap(d => d.tags))].sort();
+let activeTag = null;
+
+function renderTagBar() {
+  const bar = document.getElementById("tag-bar");
+  bar.innerHTML = "";
+  const all = document.createElement("button");
+  all.className = "chip" + (!activeTag ? " active" : "");
+  all.textContent = "All";
+  all.onclick = () => { activeTag = null; renderAll(); };
+  bar.appendChild(all);
+  allTags.forEach(tag => {
+    const btn = document.createElement("button");
+    btn.className = "chip" + (activeTag === tag ? " active" : "");
+    btn.textContent = tag;
+    btn.onclick = () => { activeTag = tag; renderAll(); };
+    bar.appendChild(btn);
+  });
+}
+
+function filtered() {
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  const access = document.getElementById("filter-access").value;
+  const format = document.getElementById("filter-format").value;
+  return DATASETS.filter(d => {
+    if (activeTag && !d.tags.includes(activeTag)) return false;
+    if (access && d.access !== access) return false;
+    if (format && !d.formats.includes(format)) return false;
+    if (q) {
+      const hay = [d.title,d.type,d.provider,d.description,...d.tags,...d.variables,...d.formats].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function buildCard(d) {
+  const card = document.createElement("div");
+  card.className = "card";
+  const linksHtml = d.links && d.links.length
+    ? d.links.map(l => `<a class="btn btn-primary" href="${l.url}" target="_blank" rel="noopener">${l.label} <svg width="10" height="10" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M1 10 10 1M10 1H4M10 1v6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`).join("")
+    : `<span style="font-size:.78rem;color:var(--c-ink-faint);font-weight:300">No links yet</span>`;
+  card.innerHTML = `
+    <div class="card-head" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px">
+          <span class="card-title">${d.title}</span>
+          ${accessBadge(d.access)}
+        </div>
+        <div class="card-sub">${d.provider} &nbsp;·&nbsp; ${d.type}</div>
+        <div class="card-pills">${d.tags.map(t=>`<span class="${pillClass(t)}">${t}</span>`).join("")}</div>
+      </div>
+      <div class="card-aside">
+        <svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="card-detail">
+      <p class="detail-desc">${d.description}</p>
+      <div class="detail-grid">
+        <div class="detail-cell"><label>Coverage</label><span>${d.coverage}</span></div>
+        <div class="detail-cell"><label>Temporal range</label><span>${d.temporal}</span></div>
+        <div class="detail-cell"><label>Formats</label><span>${d.formats.join(", ")}</span></div>
+        <div class="detail-cell"><label>Access</label><span>${d.access || "—"}</span></div>
+      </div>
+      <span class="vars-label">Variables</span>
+      <div class="vars-list">${d.variables.map(v=>`<span class="var-chip">${v}</span>`).join("")}</div>
+      <div class="card-actions">${linksHtml}</div>
+    </div>`;
+  const head = card.querySelector(".card-head");
+  const toggle = () => { const o = card.classList.toggle("open"); head.setAttribute("aria-expanded", o); };
+  head.addEventListener("click", toggle);
+  head.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); toggle(); }});
+  return card;
+}
+
+function renderAll() {
+  renderTagBar();
+  const results = filtered();
+  const list = document.getElementById("card-list");
+  const empty = document.getElementById("empty-state");
+  list.innerHTML = "";
+  document.getElementById("result-count").textContent = results.length ? `${results.length} dataset${results.length!==1?"s":""}` : "";
+  empty.style.display = results.length ? "none" : "block";
+  results.forEach(d => list.appendChild(buildCard(d)));
+}
+
+document.getElementById("search").addEventListener("input", renderAll);
+document.getElementById("filter-access").addEventListener("change", renderAll);
+document.getElementById("filter-format").addEventListener("change", renderAll);
+renderAll();
+</script>
+</body>
+</html>
