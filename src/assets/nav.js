@@ -17,6 +17,21 @@
 
    FOOTER LINKS: edit the footerLinks array below.
    ═══════════════════════════════════════════════════════════ */
+(function() {
+  var Countly = window.Countly = window.Countly || {};
+  Countly.q = Countly.q || [];
+  Countly.app_key = "2d884cde319dcea32d8c3a35f0a3cec5bd028540";
+  Countly.url = "https://countly.test.hedera.online/";
+  Countly.q.push(["track_sessions"]);
+  Countly.q.push(["track_pageview"]);
+  Countly.q.push(["track_errors"]);
+  Countly.q.push(["require_consent"])
+  var cly = document.createElement("script");
+  cly.async = true;
+  cly.src = "https://cdn.jsdelivr.net/npm/countly-sdk-web@latest/lib/countly.min.js";
+  cly.onload = function() { Countly.init(); };
+  document.head.appendChild(cly);
+})();
 
 const SITE_CONFIG = {
   /* ── Sidebar logo ──────────────────────────────────────── */

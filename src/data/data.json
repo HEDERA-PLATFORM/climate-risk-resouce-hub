@@ -1,0 +1,223 @@
+{
+  "providers": [
+    {
+      "id": "copernicus",
+      "name": "Copernicus Climate Change Service",
+      "type": "data_platform",
+      "organization": "ECMWF",
+      "coverage": "Global",
+      "api": true,
+      "access": "Open Access",
+      "tags": ["reanalysis", "climate projections", "EU"],
+      "website": "https://cds.climate.copernicus.eu"
+    },
+    {
+      "id": "ipcc",
+      "name": "IPCC",
+      "type": "scientific_body",
+      "organization": "United Nations",
+      "coverage": "Global",
+      "api": false,
+      "access": "Open Access",
+      "tags": ["climate scenarios", "CMIP6"],
+      "website": "https://www.ipcc.ch"
+    },
+    {
+      "id": "chirps",
+      "name": "CHIRPS (Climate Hazards Group)",
+      "type": "dataset_provider",
+      "organization": "UC Santa Barbara",
+      "coverage": "50°S–50°N",
+      "api": true,
+      "access": "Open Access",
+      "tags": ["rainfall", "drought", "agriculture"],
+      "website": "https://www.chc.ucsb.edu/data/chirps"
+    },
+    {
+      "id": "worldbank",
+      "name": "World Bank Climate Change Knowledge Portal",
+      "type": "data_platform",
+      "coverage": "Global",
+      "api": false,
+      "access": "Open Access",
+      "tags": ["country data", "risk"],
+      "website": "https://climateknowledgeportal.worldbank.org"
+    },
+    {
+      "id": "nasa",
+      "name": "NASA POWER",
+      "type": "data_platform",
+      "coverage": "Global",
+      "api": true,
+      "access": "Open Access",
+      "tags": ["solar", "temperature", "agriculture"],
+      "website": "https://power.larc.nasa.gov"
+    }
+  ],
+
+  "hazards": [
+    { "id": "drought", "name": "Drought / Water Stress" },
+    { "id": "flood", "name": "Flood (River / Pluvial / Coastal)" },
+    { "id": "heat", "name": "Extreme Heat" },
+    { "id": "storm", "name": "Storm / Cyclone / Wind" },
+    { "id": "sea_level_rise", "name": "Sea Level Rise" },
+    {"id": "wildfire", "name": "Wildfire"},
+    {"id": "landslide", "name": "Landslide"},
+    {"id": "glacial_melt", "name": "Glacial Melt"},
+    {"id": "permafrost_thaw", "name": "Permafrost Thaw"},
+    {"id": "precipitation", "name": "Precipitation Extremes"}
+  ],
+
+  "use_cases": [
+    {
+      "id": "credit_risk",
+      "name": "Credit Risk Assessment",
+      "description": "Assess exposure of borrowers to climate hazards"
+    },
+    {
+      "id": "portfolio_stress",
+      "name": "Portfolio Climate Stress Testing"
+    },
+    {
+      "id": "agriculture",
+      "name": "Agricultural Loan Monitoring"
+    },
+    {
+      "id": "branch_risk",
+      "name": "Branch / Asset Risk Screening"
+    }
+  ],
+
+  "datasets": [
+    {
+      "id": "chirps_rainfall",
+      "name": "CHIRPS Rainfall",
+      "provider": "chirps",
+      "hazards": ["drought", "flood"],
+      "use_cases": ["agriculture", "credit_risk"],
+      "type": "satellite + station blended",
+      "resolution": "0.05° (~5km)",
+      "temporal": "1981–Present",
+      "coverage": "50°S–50°N",
+      "formats": ["GeoTIFF", "NetCDF"],
+      "api": true,
+      "variables": ["precipitation"],
+      "strengths": [
+        "High resolution in developing regions",
+        "Strong for drought monitoring"
+      ],
+      "limitations": [
+        "Less accurate in complex terrain"
+      ],
+      "tags": ["rainfall", "agriculture", "drought"]
+    },
+
+    {
+      "id": "era5",
+      "name": "ERA5 Reanalysis",
+      "provider": "copernicus",
+      "hazards": ["heat", "storm", "flood"],
+      "use_cases": ["portfolio_stress", "credit_risk"],
+      "type": "reanalysis",
+      "resolution": "0.25° (~31km)",
+      "temporal": "1950–Present",
+      "coverage": "Global",
+      "formats": ["NetCDF", "GRIB"],
+      "api": true,
+      "variables": [
+        "temperature",
+        "precipitation",
+        "wind",
+        "soil moisture"
+      ],
+      "strengths": [
+        "Physically consistent dataset",
+        "Wide variable coverage"
+      ],
+      "limitations": [
+        "Coarse resolution for local risk"
+      ],
+      "tags": ["reanalysis", "baseline", "global"]
+    },
+
+    {
+      "id": "cmip6",
+      "name": "CMIP6 Climate Projections",
+      "provider": "ipcc",
+      "hazards": ["drought", "flood", "heat"],
+      "use_cases": ["portfolio_stress"],
+      "type": "climate model ensemble",
+      "resolution": "100–250 km",
+      "temporal": "Future (2020–2100)",
+      "scenarios": ["SSP1-2.6", "SSP2-4.5", "SSP5-8.5"],
+      "coverage": "Global",
+      "formats": ["NetCDF"],
+      "api": false,
+      "variables": ["temperature", "precipitation"],
+      "strengths": [
+        "Standard for climate projections",
+        "Scenario-based analysis"
+      ],
+      "limitations": [
+        "Requires downscaling"
+      ],
+      "tags": ["projection", "scenario"]
+    },
+
+    {
+      "id": "wb_portal",
+      "name": "World Bank Climate Data",
+      "provider": "worldbank",
+      "hazards": ["drought", "flood", "heat"],
+      "use_cases": ["credit_risk"],
+      "type": "aggregated indicators",
+      "resolution": "country-level",
+      "temporal": "historical + projections",
+      "coverage": "Global",
+      "formats": ["CSV", "API"],
+      "api": false,
+      "variables": ["temperature change", "precipitation change"],
+      "strengths": [
+        "Easy to use",
+        "Country-level insights"
+      ],
+      "limitations": [
+        "Low spatial resolution"
+      ],
+      "tags": ["country", "policy"]
+    }
+  ],
+
+  "indicators": [
+    {
+      "id": "spi",
+      "name": "Standardized Precipitation Index (SPI)",
+      "based_on": ["chirps_rainfall"],
+      "hazards": ["drought"],
+      "use_cases": ["agriculture", "credit_risk"],
+      "output": "Drought severity classification",
+      "methodology": "Standardized precipitation anomalies",
+      "mfi_relevance": "Identifies crop failure risk"
+    },
+
+    {
+      "id": "heat_days",
+      "name": "Extreme Heat Days",
+      "based_on": ["era5", "cmip6"],
+      "hazards": ["heat"],
+      "use_cases": ["credit_risk", "portfolio_stress"],
+      "output": "Number of days > 35°C",
+      "mfi_relevance": "Impacts labor productivity and health"
+    },
+
+    {
+      "id": "flood_risk_index",
+      "name": "Flood Risk Index",
+      "based_on": ["era5", "chirps_rainfall"],
+      "hazards": ["flood"],
+      "use_cases": ["branch_risk", "credit_risk"],
+      "output": "Composite flood exposure score",
+      "mfi_relevance": "Useful for housing and SME lending"
+    }
+  ]
+}
